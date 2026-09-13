@@ -1,0 +1,19 @@
+# python
+backend/.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.local
+
+# node / vite
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.render-check/
+npm-debug.log*
+
+# editors / os
+.DS_Store
+.idea/
+.vscode/
+*.swp
