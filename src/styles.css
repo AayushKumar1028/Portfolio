@@ -650,6 +650,30 @@ html[data-theme="light"] {
   }
 }
 
+/* Theme switch.
+   Flipping the toggle fades the colours instead of snapping them. The class is
+   added only for the duration of the switch — see applyTheme() in src/app.js —
+   so this never touches page load, hover states or the scroll reveals.
+
+   Only the flat colour channels are listed. Background *images* cannot be
+   interpolated, so a few surfaces (the tile sheen, the gradient buttons and
+   the wallpaper glow) still step; the flat colours beneath them carry the
+   fade, which is what the eye reads as smooth. */
+@media (prefers-reduced-motion: no-preference) {
+  html.is-theming,
+  html.is-theming *,
+  html.is-theming *::before,
+  html.is-theming *::after {
+    transition:
+      background-color 0.32s ease,
+      color 0.32s ease,
+      border-color 0.32s ease,
+      fill 0.32s ease,
+      stroke 0.32s ease,
+      box-shadow 0.32s ease !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

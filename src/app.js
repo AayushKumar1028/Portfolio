@@ -100,8 +100,30 @@ function currentTheme() {
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
+/* Outlives the 0.32s transition in src/styles.css, so the class is still in
+   place when the fade finishes. */
+const THEME_FADE_MS = 420;
+let themeFadeTimer = null;
+
+/* The transition itself lives in the stylesheet, gated behind a class that only
+   exists during a switch — otherwise every hover would inherit a 0.32s colour
+   fade. The class has to be in place before the colours change, and reading a
+   layout property flushes it so the browser has a style to interpolate from. */
+function beginThemeFade() {
+  const root = document.documentElement;
+  root.classList.add("is-theming");
+  void root.offsetWidth;
+
+  clearTimeout(themeFadeTimer);
+  themeFadeTimer = setTimeout(() => root.classList.remove("is-theming"), THEME_FADE_MS);
+}
+
 function applyTheme(next, { persist = true } = {}) {
   const root = document.documentElement;
+
+  /* Only a real change is worth fading. On first load the head script has
+     already set the attribute, so there is nothing to animate. */
+  if (next !== currentTheme()) beginThemeFade();
 
   if (next === "light") root.dataset.theme = "light";
   else delete root.dataset.theme;

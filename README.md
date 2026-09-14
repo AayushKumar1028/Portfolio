@@ -251,6 +251,13 @@ now sits on those darker stops. Dark stays the default, and a small script in
 each page's `<head>` applies the saved choice before first paint, so a
 light-mode visitor never sees a flash of the dark palette.
 
+Switching fades rather than snaps: `src/app.js` adds an `is-theming` class for
+the length of the change and the stylesheet hangs the colour transitions off
+that class, so hover states and page load are never animated by it. Only the
+flat colour channels transition — background *images* cannot be interpolated, so
+the tile sheen, the gradient buttons and the wallpaper glow still step. The
+whole fade is skipped for `prefers-reduced-motion: reduce`.
+
 ---
 
 ## History
