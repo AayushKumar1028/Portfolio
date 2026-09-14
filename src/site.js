@@ -11,9 +11,9 @@ export const SITE = {
   city: "Brampton",
   region: "Ontario, Canada",
   email: "kumarkids.aayush@gmail.com",
-  githubUser: "Aayush01",
-  githubUrl: "https://github.com/Aayush01",
-  githubReposUrl: "https://github.com/Aayush01?tab=repositories",
+  githubUser: "AayushKumar1028",
+  githubUrl: "https://github.com/AayushKumar1028",
+  githubReposUrl: "https://github.com/AayushKumar1028?tab=repositories",
 };
 
 /* Primary navigation, mirrored in the markup of every page. */

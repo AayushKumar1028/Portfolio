@@ -13,48 +13,127 @@ const CACHE_KEY = `portfolio:github:${SITE.githubUser}`;
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const REPO_LIMIT = 100;
 
-/* Snapshot of github.com/Aayush01, shown when GitHub cannot be reached (rate
-   limit, offline, or a blocked request). Keeps the site readable instead of
-   showing an empty grid. */
+/* Snapshot of github.com/AayushKumar1028, shown when GitHub cannot be reached
+   (rate limit, offline, or a blocked request). Keeps the site readable instead
+   of showing an empty grid. Regenerate it from the live API after a big change
+   to the account, so a rate-limited visitor does not see stale counts. */
 export const FALLBACK = {
   source: "fallback",
   fetchedAt: null,
   stale: true,
   profile: {
     login: SITE.githubUser,
-    name: null,
-    publicRepos: 1,
-    followers: 0,
-    following: 0,
+    name: "Aayush Kumar",
+    publicRepos: 5,
+    followers: 1,
+    following: 5,
     url: SITE.githubUrl,
   },
   stats: {
-    repos: 1,
+    repos: 5,
     stars: 0,
-    forks: 0,
-    emptyRepos: 1,
-    lastPush: "2016-08-14T02:10:47Z",
-    languages: [{ name: "unspecified", count: 1 }],
-    followers: 0,
+    forks: 1,
+    emptyRepos: 0,
+    lastPush: "2026-09-15T00:47:14Z",
+    languages: [
+      { name: "HTML", count: 3 },
+      { name: "C#", count: 1 },
+      { name: "unspecified", count: 1 },
+    ],
+    followers: 1,
   },
   repos: [
     {
-      name: "Smokey01",
-      description: "Empty repository — no commits, no README and no language detected yet.",
+      name: "Portfolio",
+      description: null,
+      language: "HTML",
+      stars: 0,
+      forks: 0,
+      openIssues: 0,
+      topics: [],
+      url: "https://github.com/AayushKumar1028/Portfolio",
+      homepage: "https://portfolio-alpha-dun-69.vercel.app",
+      fork: false,
+      archived: false,
+      size: 0,
+      createdAt: "2026-09-14T23:14:38Z",
+      updatedAt: "2026-09-15T00:47:18Z",
+      pushedAt: "2026-09-15T00:47:14Z",
+      isEmpty: false,
+    },
+    {
+      name: "Insta-chat",
+      description:
+        "A windows application (soon for android and ios) for users with an instagram account who have parental restricitons on instagram reels. This app will allow you to access ONLY your instagram chats.",
+      language: "C#",
+      stars: 0,
+      forks: 0,
+      openIssues: 0,
+      topics: [],
+      url: "https://github.com/AayushKumar1028/Insta-chat",
+      homepage: null,
+      fork: false,
+      archived: false,
+      size: 152,
+      createdAt: "2026-09-07T18:11:35Z",
+      updatedAt: "2026-09-14T15:22:40Z",
+      pushedAt: "2026-09-14T15:22:28Z",
+      isEmpty: false,
+    },
+    {
+      name: "Business-Website",
+      description:
+        "Modern business course website redesign built with HTML, CSS, and responsive web design principles.",
+      language: "HTML",
+      stars: 0,
+      forks: 0,
+      openIssues: 0,
+      topics: [],
+      url: "https://github.com/AayushKumar1028/Business-Website",
+      homepage: null,
+      fork: false,
+      archived: false,
+      size: 35,
+      createdAt: "2026-09-10T21:46:10Z",
+      updatedAt: "2026-09-10T23:07:48Z",
+      pushedAt: "2026-09-10T23:07:45Z",
+      isEmpty: false,
+    },
+    {
+      name: "AayushKumar1028",
+      description: null,
       language: null,
       stars: 0,
       forks: 0,
       openIssues: 0,
       topics: [],
-      url: "https://github.com/Aayush01/Smokey01",
+      url: "https://github.com/AayushKumar1028/AayushKumar1028",
       homepage: null,
       fork: false,
       archived: false,
-      size: 0,
-      createdAt: "2016-08-14T02:10:47Z",
-      updatedAt: "2016-08-14T02:10:47Z",
-      pushedAt: "2016-08-14T02:10:47Z",
-      isEmpty: true,
+      size: 23,
+      createdAt: "2026-06-03T22:40:51Z",
+      updatedAt: "2026-09-08T20:59:12Z",
+      pushedAt: "2026-09-08T20:57:22Z",
+      isEmpty: false,
+    },
+    {
+      name: "English-Semester-Final-Website",
+      description: "All of my programming projects of 2026.",
+      language: "HTML",
+      stars: 0,
+      forks: 1,
+      openIssues: 1,
+      topics: [],
+      url: "https://github.com/AayushKumar1028/English-Semester-Final-Website",
+      homepage: "https://2026-projects.vercel.app",
+      fork: false,
+      archived: false,
+      size: 5976,
+      createdAt: "2026-06-01T20:17:49Z",
+      updatedAt: "2026-06-06T20:49:07Z",
+      pushedAt: "2026-06-06T20:49:04Z",
+      isEmpty: false,
     },
   ],
 };
@@ -101,6 +180,11 @@ async function getJson(path) {
 
 function normalizeRepo(repo) {
   const size = repo.size ?? 0;
+  /* Size is reported in kilobytes and rounds down, so a repository that does
+     have commits can still report 0 — github.com/AayushKumar1028/Portfolio is
+     one. An empty repository is only one whose size is 0 *and* whose push
+     stamp never moved past creation. */
+  const isEmpty = size === 0 && (!repo.pushed_at || repo.pushed_at === repo.created_at);
   return {
     name: repo.name,
     description: repo.description,
@@ -117,7 +201,7 @@ function normalizeRepo(repo) {
     createdAt: repo.created_at,
     updatedAt: repo.updated_at,
     pushedAt: repo.pushed_at,
-    isEmpty: size === 0,
+    isEmpty,
   };
 }
 
