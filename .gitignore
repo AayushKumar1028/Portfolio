@@ -1,16 +1,10 @@
-# python
-backend/.venv/
-__pycache__/
-*.py[cod]
+# build output
+dist/
+node_modules/
+
+# local build config (.env.example is tracked on purpose)
 .env
 .env.local
-
-# node / vite
-frontend/node_modules/
-frontend/dist/
-frontend/.vite/
-frontend/.render-check/
-npm-debug.log*
 
 # editors / os
 .DS_Store

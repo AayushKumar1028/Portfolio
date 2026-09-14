@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Explicit sources. Tailwind's automatic detection is relative to this file, so
+   it would miss the pages at the repository root — and the class names that
+   only appear inside JS template strings, which live in ./app.js. */
+@source "../*.html";
+@source "./*.js";
+
 /* ==========================================================================
    Design tokens — CachyOS (teal) + Hyprland (pink/violet/cyan) + Arch (blue)
    Every token below also generates Tailwind utilities, e.g.
@@ -369,25 +375,6 @@
     font-weight: 700;
   }
 
-  /* ------------------------------------------------------------- swatches */
-  .swatch {
-    border-radius: 0.6rem;
-    border: 1px solid rgba(232, 242, 255, 0.1);
-    height: 3.25rem;
-    display: flex;
-    align-items: flex-end;
-    padding: 0.4rem 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    color: rgba(4, 18, 26, 0.85);
-    font-weight: 700;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .swatch:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 14px 26px -14px rgba(0, 0, 0, 0.9);
-  }
-
   /* --------------------------------------------------------------- misc */
   .tile-divider {
     border-top: 1px dashed rgba(147, 169, 196, 0.18);
@@ -417,18 +404,16 @@
     box-shadow: none;
   }
 
-  .cursor::after {
-    content: "▍";
-    color: var(--color-cachy);
-    animation: blink 1.05s step-end infinite;
-  }
-
-  .reveal {
+  /* Scroll-reveal.
+     Scoped under `.js`, which index.html sets on <html> before paint. Without
+     JavaScript these elements are never hidden, so the page still reads
+     normally for a crawler or a browser with scripting off. */
+  .js .reveal {
     opacity: 0;
     transform: translateY(14px);
     transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
   }
-  .reveal.is-visible {
+  .js .reveal.is-visible {
     opacity: 1;
     transform: none;
   }
@@ -440,17 +425,6 @@
   }
   to {
     transform: translateX(-50%);
-  }
-}
-
-@keyframes blink {
-  0%,
-  49% {
-    opacity: 1;
-  }
-  50%,
-  100% {
-    opacity: 0;
   }
 }
 
@@ -488,12 +462,9 @@
   .live-dot {
     animation: none;
   }
-  .reveal {
+  .js .reveal {
     opacity: 1;
     transform: none;
     transition: none;
-  }
-  .cursor::after {
-    animation: none;
   }
 }

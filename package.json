@@ -1,0 +1,17 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Aayush Kumar — static portfolio built with HTML, Tailwind CSS and vanilla JS.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css --minify",
+    "build:dev": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css",
+    "watch:css": "tailwindcss -i src/styles.css -o dist/styles.css --watch",
+    "serve": "npx --yes serve dist"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
+}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#060a10" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+
+    <title>Projects — Aayush Kumar</title>
+    <meta
+      name="description"
+      content="Every public repository from github.com/Aayush01, read live from the GitHub API: languages, stars, forks and last commit, with search and filters."
+    />
+    <meta name="author" content="Aayush Kumar" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="__SITE_URL__/projects" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aayush Kumar" />
+    <meta property="og:locale" content="en_CA" />
+    <meta property="og:title" content="Projects — Aayush Kumar" />
+    <meta
+      property="og:description"
+      content="Every public repository from github.com/Aayush01, read live from the GitHub API."
+    />
+    <meta property="og:url" content="__SITE_URL__/projects" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Projects — Aayush Kumar" />
+    <meta
+      name="twitter:description"
+      content="Every public repository from github.com/Aayush01, read live from the GitHub API."
+    />
+  </head>
+
+  <body>
+    <div class="backdrop-glow"></div>
+    <div class="backdrop-grid"></div>
+
+    <header class="fixed inset-x-0 top-0 z-50">
+      <div class="mx-auto max-w-shell px-3 pt-3 sm:px-5">
+        <nav class="topbar flex items-center gap-2 rounded-2xl px-3 py-2" aria-label="Primary">
+          <a href="/" class="flex min-w-0 items-center gap-2" aria-label="Aayush Kumar — home">
+            <svg class="brand-mark shrink-0" width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
+              <defs>
+                <linearGradient id="navg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#e879f9" />
+                  <stop offset=".45" stop-color="#a855f7" />
+                  <stop offset=".75" stop-color="#1793d1" />
+                  <stop offset="1" stop-color="#2ad4c4" />
+                </linearGradient>
+              </defs>
+              <path d="M16 3 28 27h-6.2L16 14.6 10.2 27H4z" fill="url(#navg)" />
+              <circle cx="16" cy="23.4" r="2.8" fill="#060a10" />
+            </svg>
+            <span class="mono truncate text-xs font-bold text-ink sm:text-sm">
+              aayush<span class="text-cachy">@</span><span class="grad-text">cachyos</span>
+            </span>
+            <span class="mono hidden text-xs text-dim md:inline">:~$</span>
+          </a>
+
+          <div class="ml-auto flex items-center gap-1">
+            <a href="/" class="ws">
+              <span class="ws-num">1</span><span class="hidden sm:inline">home</span>
+            </a>
+            <a href="/projects" class="ws is-active" aria-current="page">
+              <span class="ws-num">2</span><span class="hidden sm:inline">projects</span>
+            </a>
+            <a href="/about" class="ws">
+              <span class="ws-num">3</span><span class="hidden sm:inline">about</span>
+            </a>
+          </div>
+
+          <div class="ml-3 hidden items-center gap-2 border-l border-line pl-3 lg:flex">
+            <span class="mono text-xs text-muted" data-clock>—</span>
+            <span class="pill">CA</span>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="pt-28 sm:pt-32">
+      <div class="mx-auto max-w-shell px-3 sm:px-5">
+        <header class="mb-8">
+          <p class="mono prompt text-xs text-muted">ls ~/projects</p>
+          <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">
+            <span class="grad-text">Projects</span>
+          </h1>
+          <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+            Every public repository on
+            <a
+              href="https://github.com/Aayush01"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-cachy transition hover:text-cachy-light"
+              >github.com/Aayush01</a
+            >, fetched by your browser and cached for five minutes.
+          </p>
+
+          <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <span class="mono flex items-center gap-2 text-xs text-dim">
+              <span class="live-dot" data-status-dot></span>
+              <span data-status-text>connecting…</span>
+            </span>
+            <span class="mono text-xs text-dim">
+              <span data-stat="repos">—</span> repos
+              <span class="text-line">·</span>
+              <span data-stat="stars">—</span> stars
+            </span>
+          </div>
+        </header>
+
+        <!-- ------------------------------------------------------- controls -->
+        <div class="win win-static mb-6 flex flex-col gap-4 p-4 sm:p-5">
+          <div class="relative">
+            <span class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-dim">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+            </span>
+            <input
+              type="search"
+              class="field pl-9"
+              placeholder="search repos, descriptions, topics…"
+              aria-label="Search projects"
+              data-search
+            />
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="label">lang</span>
+              <div class="flex flex-wrap items-center gap-2" data-lang-chips></div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="label">sort</span>
+              <div class="flex flex-wrap items-center gap-2" data-sort-chips></div>
+            </div>
+          </div>
+
+          <p class="mono text-xs text-dim" data-match-count>loading…</p>
+        </div>
+
+        <!-- ----------------------------------------------------------- grid -->
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-repo-grid>
+          <div class="skel h-52"></div>
+          <div class="skel h-52"></div>
+          <div class="skel h-52"></div>
+        </div>
+
+        <!-- Toggled with the [hidden] attribute, so no display utility may sit on
+             this element — a class like .flex would override [hidden]. -->
+        <div data-empty hidden>
+          <div class="win flex flex-col items-center gap-3 p-10 text-center">
+            <p class="mono text-sm text-ink">no projects match that filter.</p>
+            <p class="mono text-xs text-dim">
+              try clearing the search box or switching language back to all.
+            </p>
+            <button type="button" class="btn btn-ghost mt-2" data-reset-filters>reset filters</button>
+          </div>
+        </div>
+
+        <p class="mono mt-6 text-xs text-dim" data-snapshot-note hidden></p>
+      </div>
+    </main>
+
+    <footer class="mt-20 border-t border-line/70">
+      <div
+        class="mx-auto flex max-w-shell flex-col items-start justify-between gap-3 px-3 py-8 sm:flex-row sm:items-center sm:px-5"
+      >
+        <p class="mono text-xs text-dim">
+          aayush kumar <span class="text-hypr-violet">·</span> brampton, canada
+        </p>
+        <p class="mono text-xs text-dim">
+          © <span data-year>2026</span> <span class="text-hypr-pink">·</span> html + tailwind css +
+          vanilla js
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

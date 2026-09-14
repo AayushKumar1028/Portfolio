@@ -1,0 +1,147 @@
+/* Build the static site into dist/.
+ *
+ * Steps: clean dist/, copy the pages with the site URL substituted, copy the
+ * scripts and static assets, then write robots.txt and sitemap.xml.
+ *
+ * The stylesheet is compiled separately by the Tailwind CLI — see the `build`
+ * script in package.json, which runs this file first so dist/ exists.
+ *
+ * Search crawlers and social scrapers need the *absolute* URL of the site in
+ * three places (canonical/Open Graph tags and the two generated files), so the
+ * domain is resolved once per build rather than hardcoded:
+ *
+ *   1. VITE_SITE_URL or SITE_URL  — set either to pin a domain explicitly
+ *   2. VERCEL_PROJECT_PRODUCTION_URL — Vercel's production domain for the
+ *      project: the primary custom domain once one is added, otherwise the
+ *      *.vercel.app one. Always set, even on preview deployments.
+ *   3. VERCEL_URL                  — the per-deployment URL; last resort
+ *   4. localhost                   — plain local builds
+ */
+
+import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = path.dirname(fileURLToPath(import.meta.url));
+const DIST = path.join(ROOT, "dist");
+const SRC = path.join(ROOT, "src");
+const STATIC = path.join(ROOT, "static");
+
+const PAGES = ["index.html", "projects.html", "about.html", "404.html"];
+
+/* Public, indexable routes. 404.html is deliberately absent: it is served with
+   `noindex` and should never be submitted. */
+const ROUTES = [
+  { path: "/", changefreq: "weekly", priority: "1.0" },
+  { path: "/projects", changefreq: "daily", priority: "0.8" },
+  { path: "/about", changefreq: "monthly", priority: "0.6" },
+];
+
+const SITE_URL_TOKEN = "__SITE_URL__";
+const LOCAL_FALLBACK = "http://127.0.0.1:5173";
+
+/** Add a scheme if missing and drop any trailing slash. */
+function withProtocol(value) {
+  if (typeof value !== "string") return "";
+  const trimmed = value.trim().replace(/\/+$/, "");
+  if (!trimmed) return "";
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+/** Minimal .env reader, so a local build can pin a domain without exporting it. */
+async function readDotEnv() {
+  const file = path.join(ROOT, ".env");
+  const values = {};
+  try {
+    const raw = await readFile(file, "utf8");
+    for (const line of raw.split("\n")) {
+      const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/i.exec(line);
+      if (!match) continue;
+      values[match[1]] = match[2].replace(/^["']|["']$/g, "");
+    }
+  } catch {
+    /* no .env — that is the normal case */
+  }
+  return values;
+}
+
+function resolveSiteUrl(env) {
+  for (const candidate of [
+    env.VITE_SITE_URL,
+    env.SITE_URL,
+    env.VERCEL_PROJECT_PRODUCTION_URL,
+    env.VERCEL_URL,
+  ]) {
+    const url = withProtocol(candidate);
+    if (url) return url;
+  }
+  return LOCAL_FALLBACK;
+}
+
+function buildRobots(siteUrl) {
+  return [
+    "User-agent: *",
+    "Allow: /",
+    "",
+    "# Vercel serves preview deployments from their own hostnames; only the",
+    "# production domain is advertised for crawling.",
+    `Sitemap: ${siteUrl}/sitemap.xml`,
+    "",
+  ].join("\n");
+}
+
+function buildSitemap(siteUrl, lastmod) {
+  const entries = ROUTES.map(
+    (route) =>
+      "  <url>\n" +
+      `    <loc>${siteUrl}${route.path}</loc>\n` +
+      `    <lastmod>${lastmod}</lastmod>\n` +
+      `    <changefreq>${route.changefreq}</changefreq>\n` +
+      `    <priority>${route.priority}</priority>\n` +
+      "  </url>"
+  ).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+}
+
+/* ------------------------------------------------------------------- build */
+
+const siteUrl = resolveSiteUrl({ ...(await readDotEnv()), ...process.env });
+const written = [];
+
+await rm(DIST, { recursive: true, force: true });
+await mkdir(DIST, { recursive: true });
+
+/* Pages, with the site URL substituted. Throwing on a leftover token keeps a
+   half-filled canonical tag out of a deployment. */
+for (const page of PAGES) {
+  const html = await readFile(path.join(ROOT, page), "utf8");
+  const occurrences = html.split(SITE_URL_TOKEN).length - 1;
+  const output = html.split(SITE_URL_TOKEN).join(siteUrl);
+
+  if (output.includes(SITE_URL_TOKEN)) {
+    throw new Error(`${page} still contains ${SITE_URL_TOKEN} after substitution`);
+  }
+
+  await writeFile(path.join(DIST, page), output);
+  written.push(`${page} (${occurrences} url${occurrences === 1 ? "" : "s"})`);
+}
+
+/* Scripts stay flat in dist/ so the relative imports between them resolve. */
+for (const entry of await readdir(SRC, { withFileTypes: true })) {
+  if (!entry.isFile() || !entry.name.endsWith(".js")) continue;
+  await cp(path.join(SRC, entry.name), path.join(DIST, entry.name));
+  written.push(entry.name);
+}
+
+await cp(STATIC, DIST, { recursive: true });
+written.push(...(await readdir(STATIC)).map((name) => `static/${name}`));
+
+await writeFile(path.join(DIST, "robots.txt"), buildRobots(siteUrl));
+await writeFile(path.join(DIST, "sitemap.xml"), buildSitemap(siteUrl, new Date().toISOString().slice(0, 10)));
+written.push("robots.txt", "sitemap.xml");
+
+console.log(`\n  site url → ${siteUrl}`);
+console.log(`  ${written.length} files → dist/\n`);
+written.forEach((name) => console.log(`    ${name}`));
+console.log("\n  run `npm run watch:css` while editing styles.\n");

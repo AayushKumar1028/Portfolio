@@ -1,11 +1,12 @@
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 /** "2016-08-14T02:10:47Z" -> "Aug 14, 2016" */
 export function formatDate(iso) {
   if (!iso) return "—";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return `${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 }
 
 /** Short relative age used on repo cards, e.g. "9y ago", "3mo ago", "just now". */
@@ -29,13 +30,12 @@ export function timeAgo(iso) {
   return "just now";
 }
 
-/** Clock used in the waybar, e.g. "Sat 13 Sep 12:04". */
+/** Clock shown in the waybar, e.g. "Sat 13 Sep 12:04". */
 export function waybarClock(date = new Date()) {
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${days[date.getDay()]} ${pad(date.getDate())} ${MONTHS[date.getMonth()]} ${pad(date.getHours())}:${pad(
-    date.getMinutes()
-  )}`;
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${DAYS[date.getDay()]} ${pad(date.getDate())} ${MONTHS[date.getMonth()]} ${pad(
+    date.getHours()
+  )}:${pad(date.getMinutes())}`;
 }
 
 export function plural(count, singular, pluralForm = `${singular}s`) {

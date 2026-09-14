@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Set before first paint so the scroll-reveal styles only apply when
+         JavaScript is available; without it the page just renders. -->
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#060a10" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+
+    <title>Aayush Kumar — Developer in Brampton, Canada</title>
+    <meta
+      name="description"
+      content="Aayush Kumar — developer based in Brampton, Canada. Projects read live from github.com/Aayush01, styled after a CachyOS + Hyprland + Arch Linux rice."
+    />
+    <meta name="author" content="Aayush Kumar" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="__SITE_URL__/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aayush Kumar" />
+    <meta property="og:locale" content="en_CA" />
+    <meta property="og:title" content="Aayush Kumar — Developer in Brampton, Canada" />
+    <meta
+      property="og:description"
+      content="Aayush Kumar — developer based in Brampton, Canada. Projects read live from github.com/Aayush01, styled after a CachyOS + Hyprland + Arch Linux rice."
+    />
+    <meta property="og:url" content="__SITE_URL__/" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Aayush Kumar — Developer in Brampton, Canada" />
+    <meta
+      name="twitter:description"
+      content="Aayush Kumar — developer based in Brampton, Canada. Projects read live from github.com/Aayush01."
+    />
+
+    <!-- Search Console ownership proof. Paste the whole tag from the
+         "HTML tag" verification method here, deploy, then click Verify. -->
+    <!-- <meta name="google-site-verification" content="PASTE_YOUR_TOKEN_HERE" /> -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "__SITE_URL__/#person",
+            "name": "Aayush Kumar",
+            "givenName": "Aayush",
+            "familyName": "Kumar",
+            "jobTitle": "Developer",
+            "email": "mailto:kumarkids.aayush@gmail.com",
+            "url": "__SITE_URL__/",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Brampton",
+              "addressRegion": "Ontario",
+              "addressCountry": "CA"
+            },
+            "sameAs": ["https://github.com/Aayush01"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "__SITE_URL__/#website",
+            "url": "__SITE_URL__/",
+            "name": "Aayush Kumar",
+            "description": "Portfolio of Aayush Kumar, a developer based in Brampton, Canada.",
+            "inLanguage": "en-CA",
+            "publisher": { "@id": "__SITE_URL__/#person" }
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="backdrop-glow"></div>
+    <div class="backdrop-grid"></div>
+
+    <header class="fixed inset-x-0 top-0 z-50">
+      <div class="mx-auto max-w-shell px-3 pt-3 sm:px-5">
+        <nav class="topbar flex items-center gap-2 rounded-2xl px-3 py-2" aria-label="Primary">
+          <a href="/" class="flex min-w-0 items-center gap-2" aria-label="Aayush Kumar — home">
+            <svg class="brand-mark shrink-0" width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
+              <defs>
+                <linearGradient id="navg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#e879f9" />
+                  <stop offset=".45" stop-color="#a855f7" />
+                  <stop offset=".75" stop-color="#1793d1" />
+                  <stop offset="1" stop-color="#2ad4c4" />
+                </linearGradient>
+              </defs>
+              <path d="M16 3 28 27h-6.2L16 14.6 10.2 27H4z" fill="url(#navg)" />
+              <circle cx="16" cy="23.4" r="2.8" fill="#060a10" />
+            </svg>
+            <span class="mono truncate text-xs font-bold text-ink sm:text-sm">
+              aayush<span class="text-cachy">@</span><span class="grad-text">cachyos</span>
+            </span>
+            <span class="mono hidden text-xs text-dim md:inline">:~$</span>
+          </a>
+
+          <div class="ml-auto flex items-center gap-1">
+            <a href="/" class="ws is-active" aria-current="page">
+              <span class="ws-num">1</span><span class="hidden sm:inline">home</span>
+            </a>
+            <a href="/projects" class="ws">
+              <span class="ws-num">2</span><span class="hidden sm:inline">projects</span>
+            </a>
+            <a href="/about" class="ws">
+              <span class="ws-num">3</span><span class="hidden sm:inline">about</span>
+            </a>
+          </div>
+
+          <div class="ml-3 hidden items-center gap-2 border-l border-line pl-3 lg:flex">
+            <span class="mono text-xs text-muted" data-clock>—</span>
+            <span class="pill">CA</span>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="pt-28 sm:pt-32">
+      <!-- ------------------------------------------------------------ hero -->
+      <section>
+        <div class="mx-auto max-w-shell px-3 sm:px-5">
+          <div class="grid gap-4 lg:grid-cols-3">
+            <article class="win win-static reveal p-6 sm:p-9 lg:col-span-2">
+              <p class="mono prompt text-xs text-muted">whoami</p>
+
+              <h1 class="mt-4 text-4xl leading-[1.05] font-bold tracking-tight sm:text-6xl">
+                <span class="grad-text">Aayush Kumar</span>
+              </h1>
+
+              <p class="mono mt-5 text-sm text-muted sm:text-base">
+                developer<span class="mx-2 text-dim">·</span>Brampton, Canada
+              </p>
+
+              <p class="mt-6 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+                A personal space for the things I build. The projects grid is read live from
+                the public GitHub API in your browser, so new repositories appear without a
+                rebuild — and there is no server behind any of it.
+              </p>
+
+              <div class="mt-8 flex flex-wrap gap-3">
+                <a href="/projects" class="btn btn-primary">view projects</a>
+                <a href="/about" class="btn btn-ghost">about &amp; contact</a>
+              </div>
+
+              <div class="mono mt-8 flex flex-wrap gap-2">
+                <span class="pill">Brampton, Canada</span>
+                <span class="pill">kumarkids.aayush@gmail.com</span>
+                <span class="pill">Aayush01</span>
+              </div>
+            </article>
+
+            <!-- Live GitHub readout. Everything here is filled by src/app.js and
+                 shows an em dash until the request resolves. -->
+            <aside class="win win-static reveal flex flex-col p-5 lg:row-span-2">
+              <div class="flex items-center justify-between gap-3">
+                <p class="label">github api</p>
+                <span class="mono flex items-center gap-2 text-xs text-dim">
+                  <span class="live-dot" data-status-dot></span>
+                  <span data-status-text>connecting…</span>
+                </span>
+              </div>
+
+              <div class="mt-6 flex flex-col gap-5">
+                <div>
+                  <p class="label">public repos</p>
+                  <p class="mono grad-text mt-1 text-3xl font-bold" data-stat="repos">—</p>
+                  <p class="mono mt-1 text-xs text-dim" data-stat="reposSub"></p>
+                </div>
+                <div>
+                  <p class="label">total stars</p>
+                  <p class="mono mt-1 text-2xl font-bold text-ink" data-stat="stars">—</p>
+                  <p class="mono mt-1 text-xs text-dim" data-stat="starsSub"></p>
+                </div>
+                <div>
+                  <p class="label">last commit</p>
+                  <p class="mono mt-1 text-lg font-bold text-ink" data-stat="lastPush">—</p>
+                  <p class="mono mt-1 text-xs text-dim" data-stat="lastPushSub"></p>
+                </div>
+                <div>
+                  <p class="label">top language</p>
+                  <p class="mono mt-1 text-lg font-bold text-ink" data-stat="topLang">—</p>
+                  <p class="mono mt-1 text-xs text-dim" data-stat="topLangSub"></p>
+                </div>
+              </div>
+
+              <p class="mono tile-divider mt-6 pt-4 text-xs text-dim">
+                read from <span class="text-ink">api.github.com</span> in the browser — no server,
+                no build step to refresh it.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------------- marquee -->
+      <section class="mt-4 border-y border-line/70 bg-abyss/40 py-3">
+        <div class="marquee" data-marquee role="presentation">
+          <div class="marquee-track"></div>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------- selected work -->
+      <section class="pt-16 sm:pt-20">
+        <div class="mx-auto max-w-shell px-3 sm:px-5">
+          <div class="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <p class="label">// selected work</p>
+              <h2 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+                Latest from GitHub
+              </h2>
+            </div>
+            <a href="/projects" class="mono shrink-0 text-xs text-cachy transition hover:text-cachy-light">
+              all projects →
+            </a>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-featured>
+            <div class="skel h-56"></div>
+            <div class="skel h-56"></div>
+            <div class="skel h-56"></div>
+          </div>
+
+          <p class="mono mt-4 text-xs text-dim" data-snapshot-note hidden></p>
+        </div>
+      </section>
+
+      <!-- ----------------------------------------------------------- stack -->
+      <section class="py-16 sm:py-20">
+        <div class="mx-auto max-w-shell px-3 sm:px-5">
+          <div class="mb-6">
+            <p class="label">// how it is built</p>
+            <h2 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Stack</h2>
+            <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+              Four static HTML files and one stylesheet. No backend, no framework and no
+              runtime dependencies — the only moving part is a single script that reads
+              GitHub directly from your browser.
+            </p>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <article class="win reveal p-5">
+              <p class="label">markup</p>
+              <p class="mt-2 text-lg font-bold text-ink">HTML</p>
+              <p class="mt-2 text-sm leading-relaxed text-muted">
+                Every page is a real file, so the content exists before any script runs.
+              </p>
+            </article>
+            <article class="win reveal p-5">
+              <p class="label">styling</p>
+              <p class="mt-2 text-lg font-bold text-ink">Tailwind CSS</p>
+              <p class="mt-2 text-sm leading-relaxed text-muted">
+                Compiled to one stylesheet by the Tailwind CLI, with the palette as theme
+                tokens.
+              </p>
+            </article>
+            <article class="win reveal p-5">
+              <p class="label">behaviour</p>
+              <p class="mt-2 text-lg font-bold text-ink">Vanilla JS</p>
+              <p class="mt-2 text-sm leading-relaxed text-muted">
+                One ES module for the clock, the reveals and the projects grid.
+              </p>
+            </article>
+            <article class="win reveal p-5">
+              <p class="label">data</p>
+              <p class="mt-2 text-lg font-bold text-ink">GitHub API</p>
+              <p class="mt-2 text-sm leading-relaxed text-muted">
+                Called from the browser and cached for five minutes, with a snapshot when
+                it cannot be reached.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-line/70">
+      <div
+        class="mx-auto flex max-w-shell flex-col items-start justify-between gap-3 px-3 py-8 sm:flex-row sm:items-center sm:px-5"
+      >
+        <p class="mono text-xs text-dim">
+          aayush kumar <span class="text-hypr-violet">·</span> brampton, canada
+        </p>
+        <p class="mono text-xs text-dim">
+          © <span data-year>2026</span> <span class="text-hypr-pink">·</span> html + tailwind css +
+          vanilla js
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
