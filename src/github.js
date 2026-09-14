@@ -34,7 +34,7 @@ export const FALLBACK = {
     stars: 0,
     forks: 1,
     emptyRepos: 0,
-    lastPush: "2026-09-15T00:47:14Z",
+    lastPush: "2026-09-15T14:32:45Z",
     languages: [
       { name: "HTML", count: 3 },
       { name: "C#", count: 1 },
@@ -52,13 +52,13 @@ export const FALLBACK = {
       openIssues: 0,
       topics: [],
       url: "https://github.com/AayushKumar1028/Portfolio",
-      homepage: "https://portfolio-alpha-dun-69.vercel.app",
+      homepage: "https://aayushkumar-portfolio-v2.vercel.app",
       fork: false,
       archived: false,
-      size: 0,
+      size: 73,
       createdAt: "2026-09-14T23:14:38Z",
-      updatedAt: "2026-09-15T00:47:18Z",
-      pushedAt: "2026-09-15T00:47:14Z",
+      updatedAt: "2026-09-15T14:44:13Z",
+      pushedAt: "2026-09-15T14:32:45Z",
       isEmpty: false,
     },
     {
@@ -181,9 +181,8 @@ async function getJson(path) {
 function normalizeRepo(repo) {
   const size = repo.size ?? 0;
   /* Size is reported in kilobytes and rounds down, so a repository that does
-     have commits can still report 0 — github.com/AayushKumar1028/Portfolio is
-     one. An empty repository is only one whose size is 0 *and* whose push
-     stamp never moved past creation. */
+     have commits can still report 0. An empty repository is only one whose
+     size is 0 *and* whose push stamp never moved past creation. */
   const isEmpty = size === 0 && (!repo.pushed_at || repo.pushed_at === repo.created_at);
   return {
     name: repo.name,

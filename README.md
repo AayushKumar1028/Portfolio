@@ -60,6 +60,7 @@ Portfolio/
 npm install
 npm run build      # writes dist/
 npm run serve      # preview dist/ on http://localhost:3000
+npm test           # content smoke test
 ```
 
 While editing styles, run the CSS watcher in a second terminal:
@@ -69,6 +70,10 @@ npm run watch:css
 ```
 
 `npm run build:dev` is the same as `build` but skips CSS minification.
+
+`npm test` runs the content smoke test in `test/` on Node's built-in runner. It
+fails when a page hardcodes the GitHub account or the site domain instead of
+reading them from `src/site.js` and the `__SITE_URL__` token.
 
 > Links are written extensionless (`/projects`), which is what `cleanUrls` in
 > `vercel.json` serves and what the canonical tags point at. `npm run serve`
