@@ -26,7 +26,13 @@ import { SITE } from "../src/site.js";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const PAGES = ["index.html", "projects.html", "about.html", "404.html"];
-const SCRIPTS = ["src/app.js", "src/format.js", "src/github.js", "src/site.js"];
+const SCRIPTS = [
+  "src/app.js",
+  "src/explanations.js",
+  "src/format.js",
+  "src/github.js",
+  "src/site.js",
+];
 
 /* 404.html is served with `noindex` and is not in the sitemap, so it has no
    canonical tag on purpose. */
@@ -87,6 +93,21 @@ test("pages leave the site domain to the __SITE_URL__ token", async () => {
       hardcoded,
       null,
       `${page} hardcodes ${hardcoded?.join(", ")} — the domain is filled in at build time`
+    );
+  }
+});
+
+test("the theme storage key is the same in every page and in src/app.js", async () => {
+  /* Each page's <head> reads the key before paint; src/app.js writes it. They
+     cannot import from each other, so this is the guard against the two halves
+     of the toggle drifting apart. */
+  const key = /const THEME_KEY = "([^"]+)"/.exec(await read("src/app.js"))?.[1];
+  assert.ok(key, "src/app.js declares no THEME_KEY");
+
+  for (const page of PAGES) {
+    assert.ok(
+      (await read(page)).includes(`localStorage.getItem("${key}")`),
+      `${page} does not read the "${key}" key that src/app.js writes`
     );
   }
 });

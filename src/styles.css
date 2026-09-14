@@ -37,6 +37,8 @@
 }
 
 :root {
+  color-scheme: dark;
+
   --grad-hypr: linear-gradient(
     115deg,
     var(--color-hypr-pink) 0%,
@@ -45,6 +47,119 @@
     var(--color-cachy) 100%
   );
   --ring: rgba(42, 212, 196, 0.45);
+
+  /* ===================================================== theme surfaces
+     Dark is the default theme, so these are dark's values. Every translucent
+     surface, hairline border and shadow below reads from here instead of
+     hardcoding an rgba() — which is what lets html[data-theme="light"]
+     re-point the whole design in one place. */
+  --surface-glass: rgba(10, 16, 24, 0.6);
+  --surface-sheen: linear-gradient(160deg, rgba(232, 242, 255, 0.055), rgba(232, 242, 255, 0.015));
+  --surface-topbar: rgba(10, 16, 24, 0.72);
+  --surface-topbar-inset: rgba(255, 255, 255, 0.05);
+  --surface-field: rgba(6, 10, 16, 0.65);
+
+  --border-soft: rgba(147, 169, 196, 0.14);
+  --border-tint: rgba(147, 169, 196, 0.16);
+  --border-hover: rgba(147, 169, 196, 0.18);
+  --border-strong: rgba(147, 169, 196, 0.2);
+  --border-ghost: rgba(147, 169, 196, 0.24);
+
+  --fill-tint: rgba(147, 169, 196, 0.05);
+  --fill-tint-strong: rgba(147, 169, 196, 0.07);
+  --hover-tint: rgba(232, 242, 255, 0.06);
+  --violet-soft: rgba(168, 85, 247, 0.12);
+
+  --accent-soft: rgba(42, 212, 196, 0.1);
+  --accent-line: rgba(42, 212, 196, 0.5);
+  --accent-focus: rgba(42, 212, 196, 0.16);
+  --accent-glow: rgba(42, 212, 196, 0.55);
+  --accent-glow-strong: rgba(42, 212, 196, 0.9);
+  --accent-glow-stronger: rgba(42, 212, 196, 0.95);
+
+  /* text sitting on top of the accent gradients */
+  --on-accent: #04121a;
+  --on-accent-dim: rgba(4, 18, 26, 0.6);
+
+  --shadow-drop: rgba(0, 0, 0, 0.9);
+  --shadow-deep: rgba(0, 0, 0, 0.95);
+
+  --grid-line: rgba(147, 169, 196, 0.05);
+  --skel-line: rgba(147, 169, 196, 0.1);
+  --skel-hot: rgba(147, 169, 196, 0.12);
+
+  --glow-pink: rgba(232, 121, 249, 0.16);
+  --glow-arch: rgba(23, 147, 209, 0.2);
+  --glow-cachy: rgba(42, 212, 196, 0.14);
+}
+
+/* Light theme.
+   The palette tokens are re-pointed rather than replaced: every Tailwind
+   utility in the markup reads them through var(), so bg-void, text-ink,
+   border-line and friends all follow along. Two deliberate departures from a
+   straight inversion — the accents are darkened, because the neon teal and
+   pink read beautifully on near-black but fail contrast as text on white, and
+   --on-accent flips to white, since that text now sits on those darker stops. */
+html[data-theme="light"] {
+  color-scheme: light;
+
+  --color-void: #f4f7fb;
+  --color-abyss: #e8eef6;
+  --color-surface: #ffffff;
+  --color-line: #ccd9e8;
+  --color-ink: #0b1a2b;
+  --color-muted: #4a5c72;
+  --color-dim: #556779;
+
+  --color-arch: #0f6ea3;
+  --color-arch-light: #2a8cc4;
+  --color-arch-deep: #0a4f77;
+  --color-cachy: #0c7f74;
+  --color-cachy-light: #14a396;
+  --color-cachy-deep: #095f57;
+  --color-hypr-pink: #a921c0;
+  --color-hypr-violet: #7c3aed;
+  --color-hypr-cyan: #0e7490;
+
+  --ring: rgba(12, 127, 116, 0.3);
+
+  --surface-glass: rgba(255, 255, 255, 0.72);
+  --surface-sheen: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(238, 243, 249, 0.6));
+  --surface-topbar: rgba(255, 255, 255, 0.78);
+  --surface-topbar-inset: rgba(255, 255, 255, 0.85);
+  --surface-field: rgba(255, 255, 255, 0.9);
+
+  --border-soft: rgba(11, 26, 43, 0.1);
+  --border-tint: rgba(11, 26, 43, 0.12);
+  --border-hover: rgba(11, 26, 43, 0.16);
+  --border-strong: rgba(11, 26, 43, 0.18);
+  --border-ghost: rgba(11, 26, 43, 0.2);
+
+  --fill-tint: rgba(11, 26, 43, 0.04);
+  --fill-tint-strong: rgba(11, 26, 43, 0.06);
+  --hover-tint: rgba(11, 26, 43, 0.05);
+  --violet-soft: rgba(124, 58, 237, 0.1);
+
+  --accent-soft: rgba(12, 127, 116, 0.1);
+  --accent-line: rgba(12, 127, 116, 0.45);
+  --accent-focus: rgba(12, 127, 116, 0.18);
+  --accent-glow: rgba(12, 127, 116, 0.4);
+  --accent-glow-strong: rgba(12, 127, 116, 0.45);
+  --accent-glow-stronger: rgba(12, 127, 116, 0.55);
+
+  --on-accent: #ffffff;
+  --on-accent-dim: rgba(255, 255, 255, 0.72);
+
+  --shadow-drop: rgba(20, 40, 65, 0.14);
+  --shadow-deep: rgba(20, 40, 65, 0.2);
+
+  --grid-line: rgba(11, 26, 43, 0.045);
+  --skel-line: rgba(11, 26, 43, 0.07);
+  --skel-hot: rgba(11, 26, 43, 0.12);
+
+  --glow-pink: rgba(169, 33, 192, 0.1);
+  --glow-arch: rgba(15, 110, 163, 0.12);
+  --glow-cachy: rgba(12, 127, 116, 0.1);
 }
 
 @layer base {
@@ -64,7 +179,7 @@
 
   ::selection {
     background: var(--color-cachy);
-    color: #04121a;
+    color: var(--on-accent);
   }
 
   /* Hyprland-ish thin scrollbar */
@@ -99,9 +214,9 @@
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(46rem 30rem at 12% -8%, rgba(232, 121, 249, 0.16), transparent 62%),
-      radial-gradient(40rem 26rem at 88% 4%, rgba(23, 147, 209, 0.2), transparent 64%),
-      radial-gradient(52rem 34rem at 50% 108%, rgba(42, 212, 196, 0.14), transparent 66%);
+      radial-gradient(46rem 30rem at 12% -8%, var(--glow-pink), transparent 62%),
+      radial-gradient(40rem 26rem at 88% 4%, var(--glow-arch), transparent 64%),
+      radial-gradient(52rem 34rem at 50% 108%, var(--glow-cachy), transparent 66%);
   }
 
   .backdrop-grid {
@@ -111,8 +226,8 @@
     pointer-events: none;
     opacity: 0.4;
     background-image:
-      linear-gradient(rgba(147, 169, 196, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(147, 169, 196, 0.05) 1px, transparent 1px);
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 48px 48px;
     -webkit-mask-image: radial-gradient(80% 60% at 50% 0%, #000 0%, transparent 100%);
     mask-image: radial-gradient(80% 60% at 50% 0%, #000 0%, transparent 100%);
@@ -127,17 +242,17 @@
 
   /* ---------------------------------------------------- waybar top bar */
   .topbar {
-    background: rgba(10, 16, 24, 0.72);
+    background: var(--surface-topbar);
     backdrop-filter: blur(18px) saturate(150%);
     -webkit-backdrop-filter: blur(18px) saturate(150%);
-    border: 1px solid rgba(147, 169, 196, 0.14);
+    border: 1px solid var(--border-soft);
     box-shadow:
-      0 10px 34px -18px rgba(0, 0, 0, 0.9),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      0 10px 34px -18px var(--shadow-drop),
+      inset 0 1px 0 var(--surface-topbar-inset);
   }
 
   .brand-mark {
-    filter: drop-shadow(0 0 8px rgba(42, 212, 196, 0.55));
+    filter: drop-shadow(0 0 8px var(--accent-glow));
   }
 
   /* waybar "workspace" pills */
@@ -161,20 +276,51 @@
   }
   .ws:hover {
     color: var(--color-ink);
-    background: rgba(232, 242, 255, 0.06);
-    border-color: rgba(147, 169, 196, 0.18);
+    background: var(--hover-tint);
+    border-color: var(--border-hover);
   }
   .ws:hover .ws-num {
     color: var(--color-cachy);
   }
   .ws.is-active {
-    color: #04121a;
+    color: var(--on-accent);
     background: linear-gradient(120deg, var(--color-cachy) 0%, var(--color-arch) 100%);
     box-shadow: 0 0 20px -7px var(--ring);
     font-weight: 600;
   }
   .ws.is-active .ws-num {
-    color: rgba(4, 18, 26, 0.6);
+    color: var(--on-accent-dim);
+  }
+
+  /* Light / dark switch that sits in the waybar. The glyphs are swapped in CSS
+     (below), while app.js keeps aria-pressed and the label in sync. */
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0;
+    border-radius: 0.6rem;
+    border: 1px solid var(--border-tint);
+    background: var(--fill-tint);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .icon-btn:hover {
+    color: var(--color-ink);
+    border-color: var(--accent-line);
+    background: var(--accent-soft);
+  }
+  .icon-btn .icon-moon {
+    display: none;
+  }
+  html[data-theme="light"] .icon-btn .icon-sun {
+    display: none;
+  }
+  html[data-theme="light"] .icon-btn .icon-moon {
+    display: block;
   }
 
   /* ----------------------------------------- window / tile cards (Hyprland decor)
@@ -183,10 +329,8 @@
   .win {
     position: relative;
     border-radius: 1rem;
-    border: 1px solid rgba(147, 169, 196, 0.14);
-    background:
-      linear-gradient(160deg, rgba(232, 242, 255, 0.055), rgba(232, 242, 255, 0.015)),
-      rgba(10, 16, 24, 0.6);
+    border: 1px solid var(--border-soft);
+    background: var(--surface-sheen), var(--surface-glass);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.28s;
@@ -208,7 +352,8 @@
   }
   .win:hover {
     transform: translateY(-3px);
-    box-shadow: 0 22px 46px -28px rgba(0, 0, 0, 0.95), 0 0 26px -14px var(--ring);
+    box-shadow:
+      0 22px 46px -28px var(--shadow-deep), 0 0 26px -14px var(--ring);
   }
   .win:hover::before {
     opacity: 1;
@@ -246,8 +391,8 @@
     gap: 0.3rem;
     padding: 0.15rem 0.5rem;
     border-radius: 0.45rem;
-    border: 1px solid rgba(147, 169, 196, 0.2);
-    background: rgba(147, 169, 196, 0.07);
+    border: 1px solid var(--border-strong);
+    background: var(--fill-tint-strong);
     color: var(--color-muted);
     font-family: var(--font-mono);
     font-size: 0.6875rem;
@@ -261,8 +406,8 @@
     gap: 0.35rem;
     padding: 0.4rem 0.7rem;
     border-radius: 0.55rem;
-    border: 1px solid rgba(147, 169, 196, 0.16);
-    background: rgba(147, 169, 196, 0.05);
+    border: 1px solid var(--border-tint);
+    background: var(--fill-tint);
     color: var(--color-muted);
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -272,11 +417,11 @@
   }
   .chip:hover {
     color: var(--color-ink);
-    border-color: rgba(42, 212, 196, 0.5);
-    background: rgba(42, 212, 196, 0.1);
+    border-color: var(--accent-line);
+    background: var(--accent-soft);
   }
   .chip.is-active {
-    color: #04121a;
+    color: var(--on-accent);
     background: linear-gradient(120deg, var(--color-cachy), var(--color-arch));
     border-color: transparent;
     font-weight: 600;
@@ -306,28 +451,28 @@
     transform: none;
   }
   .btn-primary {
-    color: #04121a;
+    color: var(--on-accent);
     background: linear-gradient(120deg, var(--color-cachy) 0%, var(--color-arch-light) 56%, var(--color-hypr-violet) 130%);
-    box-shadow: 0 12px 30px -16px rgba(42, 212, 196, 0.9);
+    box-shadow: 0 12px 30px -16px var(--accent-glow-strong);
   }
   .btn-primary:hover {
-    box-shadow: 0 18px 38px -14px rgba(42, 212, 196, 0.95);
+    box-shadow: 0 18px 38px -14px var(--accent-glow-stronger);
   }
   .btn-ghost {
     color: var(--color-ink);
-    border-color: rgba(147, 169, 196, 0.24);
-    background: rgba(147, 169, 196, 0.05);
+    border-color: var(--border-ghost);
+    background: var(--fill-tint);
   }
   .btn-ghost:hover {
     border-color: var(--color-hypr-violet);
-    background: rgba(168, 85, 247, 0.12);
+    background: var(--violet-soft);
   }
 
   .field {
     width: 100%;
     border-radius: 0.7rem;
-    border: 1px solid rgba(147, 169, 196, 0.18);
-    background: rgba(6, 10, 16, 0.65);
+    border: 1px solid var(--border-hover);
+    background: var(--surface-field);
     padding: 0.7rem 0.85rem;
     color: var(--color-ink);
     font-family: var(--font-mono);
@@ -340,7 +485,7 @@
   .field:focus {
     outline: none;
     border-color: var(--color-cachy);
-    box-shadow: 0 0 0 3px rgba(42, 212, 196, 0.16);
+    box-shadow: 0 0 0 3px var(--accent-focus);
   }
 
   /* ------------------------------------------------------ marquee strip */
@@ -377,13 +522,13 @@
 
   /* --------------------------------------------------------------- misc */
   .tile-divider {
-    border-top: 1px dashed rgba(147, 169, 196, 0.18);
+    border-top: 1px dashed var(--border-hover);
   }
 
   .skel {
     border-radius: 1rem;
-    border: 1px solid rgba(147, 169, 196, 0.1);
-    background: linear-gradient(100deg, rgba(147, 169, 196, 0.05) 30%, rgba(147, 169, 196, 0.12) 50%, rgba(147, 169, 196, 0.05) 70%);
+    border: 1px solid var(--skel-line);
+    background: linear-gradient(100deg, var(--fill-tint) 30%, var(--skel-hot) 50%, var(--fill-tint) 70%);
     background-size: 220% 100%;
     animation: shimmer 1.5s linear infinite;
   }
@@ -395,13 +540,69 @@
     height: 0.5rem;
     border-radius: 999px;
     background: var(--color-cachy);
-    box-shadow: 0 0 0 0 rgba(42, 212, 196, 0.6);
+    box-shadow: 0 0 0 0 var(--accent-glow);
     animation: ping-ring 2.2s ease-out infinite;
   }
   .live-dot--offline {
     background: var(--color-dim);
     animation: none;
     box-shadow: none;
+  }
+
+  /* ------------------------------------------------------- explain modal */
+  /* Opens the write-up for a repository; pill-shaped to match the rest of the
+     card furniture. */
+  .explain {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.45rem;
+    border-radius: 0.45rem;
+    border: 1px dashed var(--border-strong);
+    background: none;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .explain:hover {
+    color: var(--color-ink);
+    border-color: var(--accent-line);
+    background: var(--accent-soft);
+  }
+
+  /* A native <dialog>, so it lives in the browser's top layer: no z-index, and
+     focus trapping, Esc-to-close and focus restoration come for free.
+     Note there is deliberately no `display` here — an author rule would beat
+     the UA's `dialog:not([open]) { display: none }` and the modal would never
+     close. Scrolling is delegated to the panel instead. */
+  .modal {
+    width: min(44rem, calc(100vw - 1.5rem));
+    max-height: min(88vh, 48rem);
+    margin: auto;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: 1rem;
+    background: var(--surface-sheen), var(--surface-glass);
+    color: var(--color-ink);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: 0 34px 70px -34px var(--shadow-deep);
+  }
+  .modal::backdrop {
+    background: rgba(3, 7, 12, 0.62);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+  html[data-theme="light"] .modal::backdrop {
+    background: rgba(11, 26, 43, 0.28);
+  }
+  .modal-panel {
+    max-height: inherit;
+    padding: 1.5rem;
+    overflow-y: auto;
   }
 
   /* Scroll-reveal.
@@ -439,13 +640,13 @@
 
 @keyframes ping-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(42, 212, 196, 0.55);
+    box-shadow: 0 0 0 0 var(--accent-glow);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(42, 212, 196, 0);
+    box-shadow: 0 0 0 8px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(42, 212, 196, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 

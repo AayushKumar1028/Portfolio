@@ -5,7 +5,8 @@
 
 import { SITE } from "./site.js";
 import { loadGithub } from "./github.js";
-import { formatDate, languageAccent, plural, timeAgo, waybarClock } from "./format.js";
+import { explanationFor } from "./explanations.js";
+import { formatDate, formatSize, languageAccent, plural, timeAgo, waybarClock } from "./format.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -85,6 +86,59 @@ function initClock() {
   setInterval(tick, 15000);
 }
 
+/* ---------------------------------------------------------------- theme */
+
+/* Light/dark switch. The saved choice is applied before first paint by the
+   inline script in each page's <head>, which reads this same key — keep the two
+   in sync. Dark is the default, so it is expressed as the absence of
+   data-theme rather than data-theme="dark", which keeps every CSS rule that
+   only cares about light mode a single attribute selector. */
+const THEME_KEY = "portfolio:theme";
+const THEME_COLOR = { dark: "#060a10", light: "#f4f7fb" };
+
+function currentTheme() {
+  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+}
+
+function applyTheme(next, { persist = true } = {}) {
+  const root = document.documentElement;
+
+  if (next === "light") root.dataset.theme = "light";
+  else delete root.dataset.theme;
+
+  if (persist) {
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      /* storage blocked, as in private mode — the choice just will not stick */
+    }
+  }
+
+  /* Tints the browser chrome on mobile, so it matches the page. */
+  const meta = $('meta[name="theme-color"]');
+  if (meta) meta.content = THEME_COLOR[next];
+
+  const label = `Switch to ${next === "light" ? "dark" : "light"} theme`;
+  $$("[data-theme-toggle]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(next === "light"));
+    button.setAttribute("aria-label", label);
+    button.title = label;
+  });
+}
+
+function initTheme() {
+  const buttons = $$("[data-theme-toggle]");
+  if (!buttons.length) return;
+
+  /* Re-applied without persisting: the head script already set the attribute,
+     so this only brings the meta tag and the button labels in line with it. */
+  applyTheme(currentTheme(), { persist: false });
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => applyTheme(currentTheme() === "light" ? "dark" : "light"));
+  });
+}
+
 /* ------------------------------------------------------------- scroll reveal */
 
 let revealObserver = null;
@@ -141,8 +195,20 @@ export function repoCard(repo) {
 
   const issues = openIssues > 0 ? `<span>${esc(openIssues)} open</span>` : "";
   const demo = repo.homepage
-    ? `<a href="${esc(repo.homepage)}" target="_blank" rel="noopener noreferrer" class="ml-auto text-cachy transition hover:text-cachy-light">demo ↗</a>`
+    ? `<a href="${esc(repo.homepage)}" target="_blank" rel="noopener noreferrer" class="text-cachy transition hover:text-cachy-light">demo ↗</a>`
     : "";
+  /* Grouped against the right edge, so the explain button keeps its place
+     whether or not this repository happens to have a live demo. */
+  const actions = `
+        <span class="ml-auto flex items-center gap-x-3">
+          ${demo}
+          <button
+            type="button"
+            class="explain"
+            data-explain="${esc(repo.name)}"
+            aria-label="Explain this project: ${esc(repo.name)}"
+          >explain</button>
+        </span>`;
 
   return `
     <article class="win flex flex-col p-5">
@@ -166,10 +232,121 @@ export function repoCard(repo) {
         <span class="inline-flex items-center gap-1">${ICON.fork(12)}${esc(forks)}</span>
         ${issues}
         ${flags}
-        ${demo}
+        ${actions}
       </div>
     </article>
   `;
+}
+
+/* ----------------------------------------------------------- explain modal */
+
+/* The repositories currently on the page, so a click can be resolved back to
+   its data. Cards are re-rendered on every keystroke in the projects filter,
+   so the click is delegated from the document and each card carries only the
+   repository name. */
+let loadedRepos = [];
+
+const EXPLAIN_SECTIONS = [
+  { key: "what", label: "what it's for" },
+  { key: "how", label: "how it was built" },
+  { key: "why", label: "why it exists" },
+];
+
+function explanationFacts(repo) {
+  return [
+    ["language", repo.language || "unspecified"],
+    ["size", formatSize(repo.size)],
+    ["last push", repo.pushedAt ? `${timeAgo(repo.pushedAt)} · ${formatDate(repo.pushedAt)}` : "—"],
+    ["created", repo.createdAt ? formatDate(repo.createdAt) : "—"],
+    ["stars", String(repo.stars ?? 0)],
+    ["forks", String(repo.forks ?? 0)],
+  ];
+}
+
+function renderExplanation(repo) {
+  const modal = $("[data-explain-modal]");
+  const text = explanationFor(repo);
+
+  $("[data-explain-title]", modal).textContent = repo.name;
+
+  const sections = EXPLAIN_SECTIONS.filter(({ key }) => text[key])
+    .map(
+      ({ key, label }) => `
+          <section>
+            <p class="label">${label}</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-muted">${esc(text[key])}</p>
+          </section>`
+    )
+    .join("");
+
+  /* Only shown for a repository with no entry in src/explanations.js, so the
+     button never looks broken — it just points at the README instead. */
+  const note = text.curated
+    ? ""
+    : `<p class="mono text-xs text-dim">
+            no write-up for this one yet — the README over on GitHub has the details.
+          </p>`;
+
+  const topics = repo.topics?.length
+    ? `<div class="flex flex-wrap gap-1.5">${repo.topics
+        .map((topic) => `<span class="pill">${esc(topic)}</span>`)
+        .join("")}</div>`
+    : "";
+
+  const facts = explanationFacts(repo)
+    .map(
+      ([label, value]) => `
+            <div>
+              <dt class="label">${label}</dt>
+              <dd class="mono mt-1 text-ink">${esc(value)}</dd>
+            </div>`
+    )
+    .join("");
+
+  $("[data-explain-body]", modal).innerHTML = `
+        ${sections}
+        ${note}
+        ${topics}
+        <dl class="mono grid grid-cols-2 gap-x-4 gap-y-3 text-xs sm:grid-cols-3">
+          ${facts}
+        </dl>`;
+
+  const links = [
+    ["github", repo.url],
+    ["readme", `${repo.url}#readme`],
+    repo.homepage ? ["live demo", repo.homepage] : null,
+  ].filter(Boolean);
+
+  $("[data-explain-links]", modal).innerHTML = links
+    .map(
+      ([label, href]) =>
+        `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer" class="mono text-xs text-cachy transition hover:text-cachy-light">${label} ↗</a>`
+    )
+    .join("");
+}
+
+function initExplain() {
+  const modal = $("[data-explain-modal]");
+  if (!modal) return;
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-explain]");
+    if (!trigger) return;
+
+    const repo = loadedRepos.find((candidate) => candidate.name === trigger.dataset.explain);
+    if (!repo) return;
+
+    renderExplanation(repo);
+    modal.showModal();
+  });
+
+  $("[data-explain-close]", modal)?.addEventListener("click", () => modal.close());
+
+  /* A click that misses the panel landed on the backdrop, which the browser
+     reports as a click on the dialog itself. */
+  modal.addEventListener("click", (event) => {
+    if (!event.target.closest(".modal-panel")) modal.close();
+  });
 }
 
 /* ------------------------------------------------------------------ stats */
@@ -229,6 +406,7 @@ function initHome() {
   loadGithub().then((data) => {
     applyStats(data);
     renderStatus(data);
+    loadedRepos = data.repos;
 
     const top = [...data.repos]
       .sort((a, b) => b.stars - a.stars || new Date(b.pushedAt || 0) - new Date(a.pushedAt || 0))
@@ -354,6 +532,7 @@ function initProjects() {
 
   loadGithub().then((data) => {
     state.repos = data.repos;
+    loadedRepos = data.repos;
     applyStats(data);
     renderStatus(data);
     renderLanguageChips();
@@ -416,8 +595,10 @@ if (typeof document !== "undefined") {
   initClock();
   initMarquee();
   initYear();
+  initTheme();
   initReveal();
   initHome();
   initProjects();
+  initExplain();
   initContact();
 }

@@ -3,8 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#060a10" />
+    <!-- Applies the saved theme before first paint. This page ships no scripts
+         of its own, so this is all the JavaScript it needs; the storage key is
+         shared with src/app.js — keep the two in sync. -->
+    <script>
+      try {
+        if (localStorage.getItem("portfolio:theme") === "light") {
+          document.documentElement.dataset.theme = "light";
+          document.querySelector('meta[name="theme-color"]').content = "#f4f7fb";
+        }
+      } catch (error) {
+        /* storage blocked, as in private mode — dark is the default */
+      }
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

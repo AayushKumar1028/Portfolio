@@ -30,6 +30,15 @@ export function timeAgo(iso) {
   return "just now";
 }
 
+/** GitHub reports a repository's size in kilobytes. */
+export function formatSize(kilobytes) {
+  if (kilobytes == null) return "—";
+
+  const megabytes = kilobytes / 1024;
+  if (megabytes >= 1) return `${megabytes < 10 ? megabytes.toFixed(1) : Math.round(megabytes)} MB`;
+  return `${kilobytes} kB`;
+}
+
 /** Clock shown in the waybar, e.g. "Sat 13 Sep 12:04". */
 export function waybarClock(date = new Date()) {
   const pad = (value) => String(value).padStart(2, "0");

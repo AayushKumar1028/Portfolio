@@ -3,13 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Set before first paint so the scroll-reveal styles only apply when
-         JavaScript is available; without it the page just renders. -->
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#060a10" />
+    <!-- Runs before first paint. It flags that JavaScript is available — so the
+         scroll-reveal styles only hide their targets when something can reveal
+         them again — and applies the saved theme, so a light-mode visitor never
+         sees a flash of the dark palette. The storage key is shared with
+         src/app.js; keep the two in sync. -->
     <script>
       document.documentElement.classList.add("js");
+      try {
+        if (localStorage.getItem("portfolio:theme") === "light") {
+          document.documentElement.dataset.theme = "light";
+          document.querySelector('meta[name="theme-color"]').content = "#f4f7fb";
+        }
+      } catch (error) {
+        /* storage blocked, as in private mode — dark is the default */
+      }
     </script>
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#060a10" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -103,7 +114,7 @@
                 </linearGradient>
               </defs>
               <path d="M16 3 28 27h-6.2L16 14.6 10.2 27H4z" fill="url(#navg)" />
-              <circle cx="16" cy="23.4" r="2.8" fill="#060a10" />
+              <circle cx="16" cy="23.4" r="2.8" fill="var(--color-void)" />
             </svg>
             <span class="mono truncate text-xs font-bold text-ink sm:text-sm">
               aayush<span class="text-cachy">@</span><span class="grad-text">cachyos</span>
@@ -127,6 +138,46 @@
             <span class="mono text-xs text-muted" data-clock>—</span>
             <span class="pill">CA</span>
           </div>
+
+          <button
+            type="button"
+            class="icon-btn ml-1"
+            data-theme-toggle
+            aria-pressed="false"
+            aria-label="Switch to light theme"
+            title="Switch to light theme"
+          >
+            <svg
+              class="icon-sun"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4.2" />
+              <path
+                d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M5.2 18.8l1.6-1.6M17.2 6.8l1.6-1.6"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20.8 13.2A8.4 8.4 0 1 1 10.8 3.2a6.6 6.6 0 0 0 10 10Z" />
+            </svg>
+          </button>
         </nav>
       </div>
     </header>
@@ -273,7 +324,8 @@
               <p class="label">behaviour</p>
               <p class="mt-2 text-lg font-bold text-ink">Vanilla JS</p>
               <p class="mt-2 text-sm leading-relaxed text-muted">
-                One ES module for the clock, the reveals and the projects grid.
+                Small ES modules for the clock, the reveals, the projects grid and the
+                explain popups.
               </p>
             </article>
             <article class="win reveal p-5">
@@ -302,6 +354,54 @@
         </p>
       </div>
     </footer>
+
+    <!-- Filled in and opened by src/app.js when a repo card's "explain" button
+         is pressed. A native <dialog> so focus trapping, Esc-to-close and focus
+         restoration come from the browser rather than from script. -->
+    <dialog class="modal" data-explain-modal aria-labelledby="explain-title">
+      <article class="modal-panel">
+        <header class="flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <p class="label">// explain this project</p>
+            <h2
+              id="explain-title"
+              class="mono mt-2 text-lg font-bold break-words text-ink"
+              data-explain-title
+            >
+              —
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            class="icon-btn shrink-0"
+            data-explain-close
+            aria-label="Close explanation"
+            title="Close explanation"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="mt-6 flex flex-col gap-5" data-explain-body></div>
+
+        <div
+          class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line/70 pt-4"
+          data-explain-links
+        ></div>
+      </article>
+    </dialog>
 
     <script type="module" src="/app.js"></script>
   </body>

@@ -183,6 +183,22 @@ GitHub sends `access-control-allow-origin: *`, so no proxy is needed.
 `loadGithub()` never throws. Repo text is escaped before it reaches the DOM, so
 a repository description containing markup cannot inject anything.
 
+### The explain popup
+
+Every repo card carries an `explain` button that opens a `<dialog>` with three
+sections — what it is for, how it was built, why it exists — alongside live
+facts (language, size, dates, stars) taken from the GitHub data already on the
+page, and links to the repo, its README and its live demo.
+
+The prose is hand-written, one entry per repository, in `src/explanations.js`.
+Nothing is generated at request time and no AI service is involved. A repository
+with no entry still opens — it falls back to its GitHub description and says
+plainly that there is no write-up yet — so adding an entry keyed by repository
+name is all it takes to fill one in.
+
+The dialog is a native `<dialog>`, which means focus trapping, Esc-to-close and
+focus restoration come from the browser rather than from script.
+
 ### The contact form
 
 There is no server, so the form builds a `mailto:` draft and hands it to the
@@ -201,7 +217,9 @@ needs a form service or a function — neither exists here today.
 | Component styles (cards, nav, pills) | `src/styles.css` (`@layer components`)     |
 | Page titles / descriptions / canonicals | each page's `<head>`                    |
 | Projects rendering, filters, search | `src/app.js`                               |
+| The write-up behind an `explain` button | `src/explanations.js`                  |
 | API calls, caching, fallback data   | `src/github.js`                            |
+| Light/dark palette, surfaces, toggle | `src/styles.css` (`html[data-theme="light"]`) and `src/app.js` |
 | Sitemap routes, SEO file generation | `build.js`                                 |
 
 Personal details live in two places on purpose: `src/site.js` for the values
@@ -222,6 +240,16 @@ with a neofetch-style block and the Arch ASCII logo.
 The scroll-reveal animation is applied only under an `html.js` class that is set
 before first paint, so without JavaScript nothing is hidden and the page still
 reads normally.
+
+Light mode re-points those same tokens rather than shipping a second
+stylesheet: `html[data-theme="light"]` overrides the palette and the
+surface/border/shadow tokens in one block, and every Tailwind utility follows
+because they all read those variables. The accents are darkened there on
+purpose — the neon teal and pink read beautifully on near-black but fail
+contrast as text on white — and the "on accent" text flips to white, since it
+now sits on those darker stops. Dark stays the default, and a small script in
+each page's `<head>` applies the saved choice before first paint, so a
+light-mode visitor never sees a flash of the dark palette.
 
 ---
 
