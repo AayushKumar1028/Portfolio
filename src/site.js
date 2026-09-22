@@ -6,7 +6,7 @@ export const SITE = {
   first: "Aayush",
   last: "Kumar",
   handle: "aayush",
-  host: "cachyos",
+  host: "portfolio",
   location: "Brampton, Canada",
   city: "Brampton",
   region: "Ontario, Canada",

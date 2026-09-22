@@ -33,7 +33,7 @@ const MARQUEE_ITEMS = [
   { text: "Aayush Kumar", color: "#e879f9" },
   { text: "Brampton, Canada", color: "#a855f7" },
   { text: `github.com/${SITE.githubUser}`, color: "#1793d1" },
-  { text: "CachyOS", color: "#2ad4c4" },
+  { text: "Portfolio", color: "#2ad4c4" },
   { text: "Hyprland", color: "#e879f9" },
   { text: "Arch Linux", color: "#4cb8f5" },
   { text: "html + tailwind css", color: "#a855f7" },
