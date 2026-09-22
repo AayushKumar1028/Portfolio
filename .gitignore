@@ -2,6 +2,9 @@
 dist/
 node_modules/
 
+# local deploy artifact
+portfolio-upload.zip
+
 # local build config (.env.example is tracked on purpose)
 .env
 .env.local

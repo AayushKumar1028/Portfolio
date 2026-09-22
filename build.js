@@ -155,7 +155,29 @@ function buildHtaccess(base) {
 
 /* ------------------------------------------------------------------- build */
 
+/* `--url=` and `--base=` beat every other source, so the domain build is one
+   unambiguous command even with a .env sitting in the way:
+
+     node build.js --url=https://aayushkumar.ca --base=portfolio
+
+   (package.json's `build:domain` is that command.) */
+function flag(name) {
+  const hit = process.argv.slice(2).find((arg) => arg.startsWith(`--${name}=`));
+  return hit ? hit.slice(name.length + 3) : undefined;
+}
+
 const env = { ...(await readDotEnv()), ...process.env };
+const flagUrl = flag("url");
+const flagBase = flag("base");
+if (flagUrl) {
+  env.SITE_URL = flagUrl;
+  delete env.VITE_SITE_URL;
+}
+if (flagBase !== undefined) {
+  env.SITE_BASE = flagBase;
+  delete env.VITE_SITE_BASE;
+}
+
 const siteBase = resolveSiteBase(env);
 /* __SITE_URL__ is the absolute URL of the site *including* the base path, so
    canonical and og:url tags point at the subpath on a subpath deploy. */

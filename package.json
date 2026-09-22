@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css --minify",
+    "build:domain": "node build.js --url=https://aayushkumar.ca --base=portfolio && tailwindcss -i src/styles.css -o dist/styles.css --minify",
     "build:dev": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css",
+    "verify:deploy": "node scripts/verify-deploy.mjs",
     "test": "node --test test/content.test.mjs",
     "watch:css": "tailwindcss -i src/styles.css -o dist/styles.css --watch",
     "serve": "npx --yes serve dist"

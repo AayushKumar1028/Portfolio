@@ -147,21 +147,18 @@ Services, no beta features, no framework preset to get right**:
 
 If the site lives at `aayushkumar.ca/portfolio/` instead of its own domain, the
 build needs to know that — every internal link is otherwise written for the
-domain root. Build with the base set and upload the *built* folder, never the
-repo:
+domain root. **Build the domain variant, and upload the *built* folder rather
+than the repo:**
 
 ```bash
-# any shell; PowerShell is covered below
-SITE_BASE=portfolio VITE_SITE_URL=https://aayushkumar.ca npm run build
+npm run build:domain     # == node build.js --url=https://aayushkumar.ca --base=portfolio
 ```
 
-```powershell
-# PowerShell
-$env:SITE_BASE = "portfolio"; $env:VITE_SITE_URL = "https://aayushkumar.ca"; npm run build
-```
-
-The build prints `site url → https://aayushkumar.ca/portfolio` — if it does
-not, the environment variables did not reach it.
+For any other domain or path, pass the flags yourself —
+`node build.js --url=https://example.com --base=blog` — or set `SITE_BASE` and
+`VITE_SITE_URL` as described under Configuration. The build prints
+`site url → https://aayushkumar.ca/portfolio`; if it does not, the settings did
+not reach it.
 
 Then, in cPanel's File Manager (or over FTP/SFTP):
 
@@ -173,6 +170,23 @@ Then, in cPanel's File Manager (or over FTP/SFTP):
    what makes `/portfolio/projects` work and shows the styled 404.
 3. Nothing from the repo root goes up: no `node_modules/`, no `src/`, no
    `build.js`, no `package.json`.
+
+### Check what the host is actually serving
+
+```bash
+npm run verify:deploy              # or: npm run verify:deploy -- https://example.com
+```
+
+This fetches the live site and fails loudly on the two ways this deploy goes
+wrong — both of which look like "the page loads but has no styling":
+
+- **`__SITE_BASE__` still in the markup** — the repository was uploaded instead
+  of `dist/`. The browser then requests `__SITE_BASE__/styles.css`, which is not
+  a file, so the stylesheet and the script never load.
+- **extensionless routes 404 while `/projects.html` works** — the generated
+  `.htaccess` never reached the host, so `/portfolio/projects` cannot be
+  rewritten. cPanel hides dotfiles by default: turn on *Settings → Show Hidden
+  Files* before selecting what to upload or move.
 
 Never upload the repository itself: the raw source references uncompiled
 Tailwind (`src/styles.css`), the canonical tags contain the unreplaced
