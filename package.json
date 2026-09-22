@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css --minify",
     "build:dev": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css",
-    "test": "node --test test/",
+    "test": "node --test test/content.test.mjs",
     "watch:css": "tailwindcss -i src/styles.css -o dist/styles.css --watch",
     "serve": "npx --yes serve dist"
   },

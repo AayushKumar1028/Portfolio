@@ -32,9 +32,9 @@ Portfolio/
 ├── index.html            # home
 ├── projects.html         # live projects grid
 ├── about.html            # bio, neofetch block, contact
-├── 404.html              # served by Vercel for unknown paths
-├── build.js              # build: copies pages, emits robots.txt + sitemap.xml
-├── vercel.json           # static build, clean URLs
+├── 404.html              # served for unknown paths (Vercel config / .htaccess)
+├── build.js              # build: copies pages, emits robots.txt, sitemap.xml, .htaccess
+├── vercel.json           # static build, clean URLs (root deploys)
 ├── package.json          # Tailwind CLI only
 ├── src/
 │   ├── styles.css        # design tokens (@theme) + component classes
@@ -73,7 +73,9 @@ npm run watch:css
 
 `npm test` runs the content smoke test in `test/` on Node's built-in runner. It
 fails when a page hardcodes the GitHub account or the site domain instead of
-reading them from `src/site.js` and the `__SITE_URL__` token.
+reading them from `src/site.js` and the `__SITE_URL__` token, or when an
+internal `href`/`src` points at the domain root instead of `__SITE_BASE__` —
+the three regressions that break the site the same way every time.
 
 > Links are written extensionless (`/projects`), which is what `cleanUrls` in
 > `vercel.json` serves and what the canonical tags point at. `npm run serve`
@@ -101,6 +103,21 @@ domain to a local build by copying `.env.example` to `.env`; on Vercel, set
 `VITE_SITE_URL` under Project → Settings → Environment Variables when you want
 to override the detected domain.
 
+### The deployment path (`SITE_BASE`)
+
+Where the site *lives* under its domain is a second setting, resolved in the
+same spirit as the domain:
+
+1. `VITE_SITE_BASE` or `SITE_BASE`, if set — the path segment(s) the build is
+   hosted under, e.g. `portfolio` for `aayushkumar.ca/portfolio/`.
+2. Empty — the site is served from the domain root, which is how Vercel deploys
+   it.
+
+The base is substituted into `__SITE_BASE__` in every internal `href`/`src`,
+appended to the resolved site URL so canonical tags and the sitemap point at
+the subpath, and written into the generated `dist/.htaccess`. Leave it unset
+for Vercel; set it to `portfolio` for the Apache/cPanel deploy described below.
+
 ---
 
 ## Deploying to Vercel
@@ -123,6 +140,51 @@ Services, no beta features, no framework preset to get right**:
 > build needed the project's framework set to *Services*, and 404'd every path
 > when it wasn't. That requirement is gone — this version must **not** be set to
 > Services. `framework: null` in `vercel.json` is correct.
+
+---
+
+## Deploying to Apache/cPanel under a subpath
+
+If the site lives at `aayushkumar.ca/portfolio/` instead of its own domain, the
+build needs to know that — every internal link is otherwise written for the
+domain root. Build with the base set and upload the *built* folder, never the
+repo:
+
+```bash
+# any shell; PowerShell is covered below
+SITE_BASE=portfolio VITE_SITE_URL=https://aayushkumar.ca npm run build
+```
+
+```powershell
+# PowerShell
+$env:SITE_BASE = "portfolio"; $env:VITE_SITE_URL = "https://aayushkumar.ca"; npm run build
+```
+
+The build prints `site url → https://aayushkumar.ca/portfolio` — if it does
+not, the environment variables did not reach it.
+
+Then, in cPanel's File Manager (or over FTP/SFTP):
+
+1. In `public_html`, create (or open) the `portfolio` folder and **empty it**.
+2. Upload the **contents of `dist/`** into it — `index.html`, `projects.html`,
+   `about.html`, `404.html`, `styles.css`, the `.js` files, `favicon.svg`,
+   `robots.txt`, `sitemap.xml` and the generated `.htaccess` (enable
+   "show hidden files" — dotfiles are hidden by default). The `.htaccess` is
+   what makes `/portfolio/projects` work and shows the styled 404.
+3. Nothing from the repo root goes up: no `node_modules/`, no `src/`, no
+   `build.js`, no `package.json`.
+
+Never upload the repository itself: the raw source references uncompiled
+Tailwind (`src/styles.css`), the canonical tags contain the unreplaced
+`__SITE_URL__` token, and server-side files like `build.js` and `.env` become
+world-readable. If the live site ever shows plain unstyled HTML, a raw upload
+is the most likely cause — check that `https://aayushkumar.ca/portfolio/styles.css`
+returns actual CSS, and that a page's canonical tag shows your domain rather
+than a `__SITE_URL__` token.
+
+**Prerequisite:** the host needs Apache with `mod_rewrite` (standard on
+cPanel/Apache shared hosting). Without it, `/portfolio/projects` 404s and only
+`/portfolio/projects.html` works.
 
 ---
 

@@ -123,3 +123,22 @@ test("every indexable page declares a canonical URL through __SITE_URL__", async
     );
   }
 });
+
+test("no page references an internal path from the domain root", async () => {
+  /* The third regression this site shipped: every href/src pointing at the
+     domain root ("/styles.css", "/projects") works on Vercel but breaks the
+     moment the build is hosted under a subpath (aayushkumar.ca/portfolio) —
+     the browser asks the domain for /styles.css, which does not exist there.
+     Internal paths must go through the __SITE_BASE__ token, which build.js
+     fills with "" for root deploys and "/portfolio" for subpath deploys. */
+  for (const page of PAGES) {
+    for (const attr of (await read(page)).matchAll(/\b(?:href|src)="(\/[^"]*)"/g)) {
+      const url = attr[1];
+      assert.match(
+        url,
+        /^\/\//, // protocol-relative — an external host owns it
+        `${page} points ${url} at the domain root — use __SITE_BASE__ so a subpath deploy resolves it`
+      );
+    }
+  }
+});
