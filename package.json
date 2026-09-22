@@ -7,6 +7,7 @@
   "scripts": {
     "build": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css --minify",
     "build:domain": "node build.js --url=https://aayushkumar.ca --base=portfolio && tailwindcss -i src/styles.css -o dist/styles.css --minify",
+    "deploy:zip": "npm run build:domain && node scripts/package-deploy.mjs",
     "build:dev": "node build.js && tailwindcss -i src/styles.css -o dist/styles.css",
     "verify:deploy": "node scripts/verify-deploy.mjs",
     "test": "node --test test/content.test.mjs",

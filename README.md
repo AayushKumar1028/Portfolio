@@ -43,6 +43,7 @@ Portfolio/
 │   ├── format.js         # date / number / colour helpers
 │   └── site.js           # name, email, GitHub handle
 ├── static/
+│   ├── avatar.png        # GitHub profile picture, shown on the About page
 │   └── favicon.svg
 └── dist/                 # build output (gitignored)
 ```
@@ -151,24 +152,28 @@ domain root. **Build the domain variant, and upload the *built* folder rather
 than the repo:**
 
 ```bash
-npm run build:domain     # == node build.js --url=https://aayushkumar.ca --base=portfolio
+npm run deploy:zip       # build:domain, then package dist/ as portfolio-upload.zip
 ```
 
-For any other domain or path, pass the flags yourself —
-`node build.js --url=https://example.com --base=blog` — or set `SITE_BASE` and
-`VITE_SITE_URL` as described under Configuration. The build prints
-`site url → https://aayushkumar.ca/portfolio`; if it does not, the settings did
-not reach it.
+That one command builds with the right settings and refuses to produce an
+archive unless every file the site needs is in it — `styles.css` included,
+which is the file an interrupted build leaves out. For a different domain or
+path use the flags directly — `node build.js --url=https://example.com
+--base=blog` — or set `SITE_BASE` and `VITE_SITE_URL` as described under
+Configuration. The build prints `site url → https://aayushkumar.ca/portfolio`;
+if it does not, the settings did not reach it.
 
 Then, in cPanel's File Manager (or over FTP/SFTP):
 
-1. In `public_html`, create (or open) the `portfolio` folder and **empty it**.
-2. Upload the **contents of `dist/`** into it — `index.html`, `projects.html`,
-   `about.html`, `404.html`, `styles.css`, the `.js` files, `favicon.svg`,
-   `robots.txt`, `sitemap.xml` and the generated `.htaccess` (enable
-   "show hidden files" — dotfiles are hidden by default). The `.htaccess` is
-   what makes `/portfolio/projects` work and shows the styled 404.
-3. Nothing from the repo root goes up: no `node_modules/`, no `src/`, no
+1. In `public_html`, create (or open) the `portfolio` folder.
+2. Upload `portfolio-upload.zip` into it, then right-click → **Extract**
+   (overwrite when asked) and delete the zip. Extracting is the part that
+   matters: the archive carries the hidden `.htaccess`, which is what makes
+   `/portfolio/projects` resolve and shows the styled 404.
+3. Copying by hand instead works too, but then enable *Settings → Show Hidden
+   Files* first, or `.htaccess` stays behind — along with `styles.css` if it is
+   selected below the visible part of the list.
+4. Nothing from the repo root goes up: no `node_modules/`, no `src/`, no
    `build.js`, no `package.json`.
 
 ### Check what the host is actually serving
