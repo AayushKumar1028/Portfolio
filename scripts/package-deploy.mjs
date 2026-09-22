@@ -23,20 +23,21 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 
 /* Everything the deployed site loads, plus what a crawler reads and the server
-   config that makes the extensionless routes work. */
+   config that makes the extensionless routes work. The paths mirror the
+   repository, because the pages reference their assets relatively. */
 const REQUIRED = [
   "index.html",
   "projects.html",
   "about.html",
   "404.html",
   "styles.css",
-  "app.js",
-  "site.js",
-  "github.js",
-  "format.js",
-  "explanations.js",
-  "favicon.svg",
-  "avatar.png",
+  "src/app.js",
+  "src/site.js",
+  "src/github.js",
+  "src/format.js",
+  "src/explanations.js",
+  "static/favicon.svg",
+  "static/avatar.png",
   "robots.txt",
   "sitemap.xml",
   ".htaccess",

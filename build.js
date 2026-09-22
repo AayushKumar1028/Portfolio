@@ -209,14 +209,18 @@ for (const page of PAGES) {
   written.push(`${page} (${occurrences} url${occurrences === 1 ? "" : "s"})`);
 }
 
-/* Scripts stay flat in dist/ so the relative imports between them resolve. */
+/* dist/ mirrors the repository's own layout — src/ and static/ keep their
+   folders — so the pages reference assets relatively and the same markup is
+   valid whether it is served from dist/, from the repo root on a shared host,
+   or from Vercel. */
+await mkdir(path.join(DIST, "src"), { recursive: true });
 for (const entry of await readdir(SRC, { withFileTypes: true })) {
   if (!entry.isFile() || !entry.name.endsWith(".js")) continue;
-  await cp(path.join(SRC, entry.name), path.join(DIST, entry.name));
-  written.push(entry.name);
+  await cp(path.join(SRC, entry.name), path.join(DIST, "src", entry.name));
+  written.push(`src/${entry.name}`);
 }
 
-await cp(STATIC, DIST, { recursive: true });
+await cp(STATIC, path.join(DIST, "static"), { recursive: true });
 written.push(...(await readdir(STATIC)).map((name) => `static/${name}`));
 
 await writeFile(path.join(DIST, "robots.txt"), buildRobots(siteUrl));

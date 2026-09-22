@@ -19,12 +19,18 @@ const DEFAULT_TARGET = "https://aayushkumar.ca/portfolio";
 const target = (process.argv[2] || DEFAULT_TARGET).replace(/\/+$/, "");
 
 let failures = 0;
+let warnings = 0;
 
 const tick = (label, detail) => console.log(`  \u001b[32m\u2713\u001b[0m ${label.padEnd(9)} ${detail}`);
 
 function cross(label, detail) {
   failures += 1;
   console.log(`  \u001b[31m\u2717\u001b[0m ${label.padEnd(9)} ${detail}`);
+}
+
+function warn(label, detail) {
+  warnings += 1;
+  console.log(`  \u001b[33m!\u001b[0m ${label.padEnd(9)} ${detail}`);
 }
 
 /** Fetch a path under the target; null when the host cannot be reached. */
@@ -57,17 +63,28 @@ const home = await checkFile("page", "/", "html");
 const html = home?.status === 200 ? await home.text() : "";
 
 if (html) {
-  /* The fingerprint of a raw upload: build placeholders still in the markup. */
-  const tokens = [...new Set(html.match(/__SITE_[A-Z]+__/g) ?? [])];
-  if (tokens.length) {
-    cross("tokens", `${tokens.join(", ")} left in the markup — serving the repository, not dist/`);
+  /* Two kinds of placeholder, with different consequences. One in an href/src
+     means the browser is asking for a file that cannot exist, so the page
+     renders bare. One in the canonical or og:url is invisible to visitors — it
+     costs search-engine correctness, not the site, so it is a warning. */
+  const assetTokens = [
+    ...new Set(
+      [...html.matchAll(/(?:href|src)="([^"]*__SITE_[A-Z]+__[^"]*)"/g)].map((match) => match[1])
+    ),
+  ];
+
+  if (assetTokens.length) {
+    cross("assets", `${assetTokens[0]} — a build never ran over these pages`);
   } else {
-    tick("tokens", "no build placeholders left");
+    tick("assets", "stylesheet and script paths are real");
   }
 
   const canonical = html.match(/rel="canonical" href="([^"]+)"/)?.[1];
-  if (canonical === `${target}/`) tick("canonical", canonical);
-  else cross("canonical", canonical ? `points at ${canonical}, expected ${target}/` : "missing");
+  if (!canonical) cross("canonical", "missing");
+  else if (canonical.includes("__SITE_")) {
+    warn("canonical", `${canonical} is a build placeholder — fine for visitors, wrong for crawlers`);
+  } else if (canonical === `${target}/`) tick("canonical", canonical);
+  else cross("canonical", `points at ${canonical}, expected ${target}/`);
 
   /* Everything the page loads: stylesheet, script, favicon. */
   const assets = [
@@ -120,9 +137,13 @@ if (sitemap?.status === 200) {
 }
 
 if (failures) {
-  console.log(`\n  ${failures} check${failures === 1 ? "" : "s"} failed — the host is not serving the build.\n`);
+  console.log(`\n  ${failures} check${failures === 1 ? "" : "s"} failed — the host is not serving a working site.`);
+} else if (warnings) {
+  console.log(`\n  the site works; ${warnings} warning${warnings === 1 ? "" : "s"} about crawlable URLs.`);
 } else {
   console.log("\n  all checks passed.\n");
 }
+
+if (failures) console.log("");
 
 process.exit(failures ? 1 : 0);

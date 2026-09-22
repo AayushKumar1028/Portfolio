@@ -28,14 +28,21 @@ because Tailwind has to compile a stylesheet.
 ## Layout
 
 ```
-Portfolio/
+Portfolio/                # this folder is itself a working site
 ├── index.html            # home
 ├── projects.html         # live projects grid
 ├── about.html            # bio, neofetch block, contact
 ├── 404.html              # served for unknown paths (Vercel config / .htaccess)
-├── build.js              # build: copies pages, emits robots.txt, sitemap.xml, .htaccess
-├── vercel.json           # static build, clean URLs (root deploys)
+├── styles.css            # compiled Tailwind, committed so an upload works
+├── robots.txt            # generated for aayushkumar.ca/portfolio
+├── sitemap.xml           # generated for aayushkumar.ca/portfolio
+├── .htaccess             # Apache: extensionless URLs + the styled 404
+├── build.js              # build: writes dist/ and refreshes the three above
+├── vercel.json           # static build, clean URLs
 ├── package.json          # Tailwind CLI only
+├── scripts/
+│   ├── package-deploy.mjs # refuses to zip an incomplete dist/
+│   └── verify-deploy.mjs  # asks the live host what it is serving
 ├── src/
 │   ├── styles.css        # design tokens (@theme) + component classes
 │   ├── app.js            # clock, reveals, GitHub rendering, filters, mailto
@@ -45,8 +52,13 @@ Portfolio/
 ├── static/
 │   ├── avatar.png        # GitHub profile picture, shown on the About page
 │   └── favicon.svg
-└── dist/                 # build output (gitignored)
+└── dist/                 # build output, mirrors this layout (gitignored)
 ```
+
+Every page loads its assets **relatively** — `styles.css`, `src/app.js`,
+`static/avatar.png` — so the same markup is valid at the domain root, under a
+`/portfolio/` subdirectory, or on Vercel. `dist/` is only a tidy copy to upload;
+the folder you are looking at is the site.
 
 ---
 
@@ -146,35 +158,42 @@ Services, no beta features, no framework preset to get right**:
 
 ## Deploying to Apache/cPanel under a subpath
 
-If the site lives at `aayushkumar.ca/portfolio/` instead of its own domain, the
-build needs to know that — every internal link is otherwise written for the
-domain root. **Build the domain variant, and upload the *built* folder rather
-than the repo:**
+Because the pages reference their assets relatively, this folder renders
+correctly wherever it is served from. What the build adds is the absolute URLs
+crawlers need — canonical, `og:url`, `sitemap.xml` — and a tidy output folder:
 
 ```bash
 npm run deploy:zip       # build:domain, then package dist/ as portfolio-upload.zip
+npm run build:domain     # just build: dist/ plus refreshed styles.css/robots/sitemap/.htaccess
 ```
 
-That one command builds with the right settings and refuses to produce an
-archive unless every file the site needs is in it — `styles.css` included,
-which is the file an interrupted build leaves out. For a different domain or
-path use the flags directly — `node build.js --url=https://example.com
---base=blog` — or set `SITE_BASE` and `VITE_SITE_URL` as described under
-Configuration. The build prints `site url → https://aayushkumar.ca/portfolio`;
-if it does not, the settings did not reach it.
+`deploy:zip` refuses to produce an archive unless every file the site needs is
+in it — `styles.css` included, which is the file an interrupted build leaves
+out. For a different domain or path use the flags directly —
+`node build.js --url=https://example.com --base=blog` — or set `SITE_BASE` and
+`VITE_SITE_URL` as described under Configuration. The build prints
+`site url → https://aayushkumar.ca/portfolio`; if it does not, the settings did
+not reach it.
 
-Then, in cPanel's File Manager (or over FTP/SFTP):
+Then, in cPanel's File Manager (or over FTP/SFTP), either:
+
+**Upload the folder.** Put this whole directory in `public_html/portfolio/` and
+it works — `styles.css`, `src/`, `static/` and `.htaccess` are all in it. The
+cost is that build tooling (`node_modules/`, `scripts/`, `src/styles.css`) ends
+up publicly readable, so prefer the next option when you can.
+
+**Upload only the site.**
 
 1. In `public_html`, create (or open) the `portfolio` folder.
 2. Upload `portfolio-upload.zip` into it, then right-click → **Extract**
-   (overwrite when asked) and delete the zip. Extracting is the part that
-   matters: the archive carries the hidden `.htaccess`, which is what makes
-   `/portfolio/projects` resolve and shows the styled 404.
+   (overwrite when asked) and delete the zip. The archive carries the hidden
+   `.htaccess`, which is what makes `/portfolio/projects` resolve and shows the
+   styled 404.
 3. Copying by hand instead works too, but then enable *Settings → Show Hidden
    Files* first, or `.htaccess` stays behind — along with `styles.css` if it is
    selected below the visible part of the list.
-4. Nothing from the repo root goes up: no `node_modules/`, no `src/`, no
-   `build.js`, no `package.json`.
+4. Nothing from the repo root goes up: no `node_modules/`, no `scripts/`, no
+   `test/`, no `src/styles.css`.
 
 ### Check what the host is actually serving
 

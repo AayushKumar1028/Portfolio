@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Vercel serves preview deployments from their own hostnames; only the
+# production domain is advertised for crawling.
+Sitemap: https://aayushkumar.ca/portfolio/sitemap.xml
